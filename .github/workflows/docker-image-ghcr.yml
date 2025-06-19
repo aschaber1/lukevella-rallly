@@ -78,7 +78,7 @@ jobs:
         run: |
           platform=${{ matrix.platform }}
           digest=${{ steps.build.outputs.digest }}
-          echo "output_${platform//\//_}=${digest}" >> $GITHUB_OUTPUT
+          echo "digest_${platform//\//_}=${digest}" | tee -a $GITHUB_OUTPUT
 
       # This step generates an artifact attestation for the image, which is an
       # unforgeable statement about where and how it was built. It increases
