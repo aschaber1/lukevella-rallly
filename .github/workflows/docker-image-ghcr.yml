@@ -85,6 +85,16 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+      # This step generates an artifact attestation for the image, which is an
+      # unforgeable statement about where and how it was built. It increases
+      # supply chain security for people who consume the image.
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true
+
   merge-and-publish:
     name: Merge digests and publish the Docker image
     runs-on: ubuntu-latest
@@ -127,13 +137,3 @@ jobs:
           images: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: ${{ steps.extractGitBranch.outputs.branchName }}
-
-      # This step generates an artifact attestation for the image, which is an
-      # unforgeable statement about where and how it was built. It increases
-      # supply chain security for people who consume the image.
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          subject-digest: ${{ steps.meta.outputs.digest }}
-          push-to-registry: true
