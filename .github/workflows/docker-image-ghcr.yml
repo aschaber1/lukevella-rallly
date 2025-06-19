@@ -96,6 +96,7 @@ jobs:
       - name: Export digest
         run: |
           echo ${{ needs.build.outputs.digest }}
+          echo '${{ toJSON(needs.build.outputs) }}'
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3
