@@ -20,7 +20,8 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     outputs:
-      digest: ${{ steps.build.outputs.digest }}
+      digest_linux_amd64: ${{ steps.gen_output.outputs.digest_linux_amd64 }}
+      digest_linux_arm64: ${{ steps.gen_output.outputs.digest_linux_arm64 }}
 
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
@@ -72,6 +73,12 @@ jobs:
             APP_VERSION=${{ github.ref_name }}
             SELF_HOSTED=true
 
+      - name: Generate output
+        id: gen_output
+        run: |
+          platform="$( echo ${{ matrix.platform }} | tr '/' '-')"
+          echo "output_${platform}=${{ steps.build.outputs.digest }}" >> "$GITHUB_OUTPUT"
+
       # This step generates an artifact attestation for the image, which is an
       # unforgeable statement about where and how it was built. It increases
       # supply chain security for people who consume the image.
@@ -98,7 +105,6 @@ jobs:
     steps:
       - name: Export digest
         run: |
-          echo ${{ needs.build.outputs.digest }}
           echo '${{ toJSON(needs.build.outputs) }}'
 
       - name: Log in to the Container registry
@@ -133,5 +139,5 @@ jobs:
           index-annotations: ${{ steps.metadata.outputs.labels }}
           tags: ${{ steps.metadata.outputs.tags }}
           sources: |
-            ghcr.io/${{ github.repository }}@${{ needs.build.outputs.digest }}
-            ghcr.io/${{ github.repository }}@${{ needs.build.outputs.digest }}
+            ghcr.io/${{ github.repository }}@${{ needs.build.outputs.digest_linux_amd64 }}
+            ghcr.io/${{ github.repository }}@${{ needs.build.outputs.digest_linux_arm64 }}
