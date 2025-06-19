@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     outputs:
-      digest: ${{ steps.build.digest }}
+      digest: ${{ steps.build.outputs.digest }}
 
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
