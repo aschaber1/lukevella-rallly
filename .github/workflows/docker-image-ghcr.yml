@@ -140,5 +140,5 @@ jobs:
           index-annotations: ${{ steps.metadata.outputs.labels }}
           tags: ${{ steps.metadata.outputs.tags }}
           sources: |
-            ghcr.io/${{ github.repository }}@${{ needs.build.outputs.digest_linux_amd64 }}
-            ghcr.io/${{ github.repository }}@${{ needs.build.outputs.digest_linux_arm64 }}
+            ${{ env.REGISTRY }}/${{ github.repository }}@${{ needs.build.outputs.digest_linux_amd64 }}
+            ${{ env.REGISTRY }}/${{ github.repository }}@${{ needs.build.outputs.digest_linux_arm64 }}
