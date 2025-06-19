@@ -76,8 +76,9 @@ jobs:
       - name: Generate output
         id: gen_output
         run: |
-          platform="$( echo ${{ matrix.platform }} | tr '/' '-')"
-          echo "output_${platform}=${{ steps.build.outputs.digest }}" >> "$GITHUB_OUTPUT"
+          platform=${{ matrix.platform }}
+          digest=${{ steps.build.outputs.digest }}
+          echo "output_${platform//\//_}=${digest}" >> $GITHUB_OUTPUT
 
       # This step generates an artifact attestation for the image, which is an
       # unforgeable statement about where and how it was built. It increases
